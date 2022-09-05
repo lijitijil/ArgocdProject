@@ -9,15 +9,7 @@ icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_t
 sources:
   - https://github.com/grafana/grafana
 maintainers:
-  - name: zanhsieh
-    email: zanhsieh@gmail.com
-  - name: rtluckie
-    email: rluckie@cisco.com
-  - name: maorfr
-    email: maor.friedman@redhat.com
-  - name: Xtigyro
-    email: miroslav.hadzhiev@gmail.com
-  - name: torstenwalter
-    email: mail@torstenwalter.de
+  - name: rispa
+    email: rizpahjoseph@gmail.com
 engine: gotpl
 type: application
