@@ -22,7 +22,7 @@ serviceAccount:
 #    eks.amazonaws.com/role-arn: arn:aws:iam::123456789000:role/iam-role-name-here
   autoMount: true
 
-replicas: 1
+replicas: 2
 
 ## Create a headless service for the deployment
 headlessService: false
