@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: dev
+    # path: dev
   destination: 
     server: https://kubernetes.default.svc
     namespace: grafana
