@@ -9,10 +9,10 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    # path: grafana
+    path: grafana
   destination: 
     server: https://kubernetes.default.svc
-    namespace: gramos
+    namespace: grafana
 
   syncPolicy:
     syncOptions:
@@ -23,6 +23,8 @@ spec:
       prune: true
   
   
+
+
   
 
 
