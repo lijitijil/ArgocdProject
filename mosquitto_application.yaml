@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mosquitto-helm-chart
+  name: mosquitto-application
   namespace: argocd
 spec:
   project: default
@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: mosquito3
+    path: mosquitto
   destination: 
     server: https://kubernetes.default.svc
     namespace: mosquitto
