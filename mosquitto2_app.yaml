@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mosquitto-application
+  name: mosquitto2-application22
   namespace: argocd
 spec:
   project: default
@@ -9,10 +9,10 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: mosquitto
+    path: mosquitto2
   destination: 
     server: https://kubernetes.default.svc
-    namespace: mosquitto
+    namespace: mosquitto2
 
   syncPolicy:
     syncOptions:
