@@ -21,6 +21,25 @@ spec:
     automated:
       selfHeal: true
       prune: true
+  
+  project: default2
+
+  source:
+    repoURL: https://github.com/RispaJoseph/argocd-app-config.git
+    targetRevision: HEAD
+    path: mosquitto
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: mosquitto
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
+    automated:
+      selfHeal: true
+      prune: true
+
 
   
 
