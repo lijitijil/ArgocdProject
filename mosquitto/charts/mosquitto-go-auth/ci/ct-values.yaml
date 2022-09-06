@@ -1,0 +1,35 @@
+auth:
+  hasher: bcrypt
+  checkPrefixes: true
+  files:
+    enabled: true
+    prefix: files_
+    # passwordEntries: ''
+    # To use authentication with mosquitto, you can set a list of password entries to be used.
+    # reference https://mosquitto.org/man/mosquitto_passwd-1.html to generate these entries.
+    # For example:
+    passwordEntries: |-
+      files_root:$2b$10$gKVCzEADnoJ3/eooe.UIku23IXcBfFV07Z72kJlKwqFYqsKVP7NJ.
+      files_user1:$2b$15$0IVohHrFsWeOE7fv9wVCXulkBop9i7QzHVyxQIBwDlMTMMKeI8xfK
+    passwordPath: "/etc/mosquitto/passwordfile"
+    # acls: ''
+    # To use authorizations with mosquitto, you can set a list of per user or pattern-based rules.
+    # reference https://mosquitto.org/man/mosquitto-conf-5.html for further information.
+    # For example:
+    acls: |-
+      user files_root
+      topic readwrite test
+
+      user files_user1
+      topic read test
+    aclPath: "/etc/mosquitto/aclfile"
+  jwt:
+    enabled: true
+    prefix: jwt_
+    mode: "remote"
+
+    # remote mode options
+    jwtHost: auth-service-nginx
+    jwtPort: 80
+    jwtGetuserUri: /v1/user
+    jwtAclcheckUri: /v1/acl

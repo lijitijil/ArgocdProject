@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: "1.6.0"
+description: Eclipse Mosquitto is an open source message broker which implements MQTT version 5, 3.1.1 and 3.1. Build includes mosquitto-go-auth plugin for more fine grained control on authentication to mosquitto
+name: mosquitto-go-auth
+version: 0.0.2
+maintainers:
+  - name: rispa
+    email: rizpahjoseph@gmail.com
+    

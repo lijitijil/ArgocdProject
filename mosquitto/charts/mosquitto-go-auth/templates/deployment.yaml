@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mosquitto.fullname" . }}
+  labels: {{- include "mosquitto.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels: {{- include "mosquitto.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "mosquitto.selector" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print .Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+      {{- if or .Values.auth.files.enabled (and .Values.auth.jwt.enabled (or (eq .Values.auth.jwt.mode "js") (eq .Values.auth.jwt.mode "files"))) }}
+        checksum/secret: {{ include (print .Template.BasePath "/secret.yaml") . | sha256sum | trunc 63 }}
+      {{- end }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml . | indent 8 | trim }}
+    {{- end }}
+      serviceAccountName: {{ include "mosquitto.serviceAccountName" . }}
+    {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{ toYaml . | indent 8 | trim }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.ports }}
+          ports:
+          {{- range $key, $value := . }}
+            - name: {{ $key }}
+              containerPort: {{ $value.port }}
+              protocol: {{ default "TCP" $value.protocol }}
+          {{- end }}
+        {{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: websocket
+            initialDelaySeconds: 5
+            periodSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: websocket
+            initialDelaySeconds: 3
+            periodSeconds: 3
+        {{- with .Values.securityContext }}
+          securityContext:
+            {{ toYaml . | indent 12 | trim }}
+        {{- end }}
+        {{- with .Values.resources }}
+          resources:
+            {{ toYaml . | indent 12 | trim }}
+        {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/mosquitto/mosquitto.conf
+              subPath: mosquitto.conf
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+              subPath: {{ .Values.persistence.subPath }}
+          {{- if .Values.ports.mqtts.enabled }}
+            - name: certfile
+              mountPath: {{ .Values.ports.mqtts.certPath }}
+              subPath: certfile
+            - name: keyfile
+              mountPath: {{ .Values.ports.mqtts.keyPath }}
+              subPath: keyfile
+          {{- end }}
+          {{- if and .Values.auth.files.enabled .Values.auth.files.passwordEntries }}
+            - name: passwordfile
+              mountPath: {{ .Values.auth.files.passwordPath }}
+              subPath: passwordfile
+          {{- end }}
+          {{- if and .Values.auth.files.enabled .Values.auth.files.acls }}
+            - name: aclfile
+              mountPath: {{ .Values.auth.files.aclPath }}
+              subPath: aclfile
+          {{- end }}
+          {{- if and .Values.auth.jwt.enabled (eq .Values.auth.jwt.mode "js") }}
+            - name: jwtJsUserScript
+              mountPath: {{ .Values.auth.jwt.jwtJsUserScriptPath }}
+              subPath: jwtJsUserScript
+            - name: jwtJsSuperuserScript
+              mountPath: {{ .Values.auth.jwt.jwtJsSuperuserScriptPath }}
+              subPath: jwtJsSuperuserScript
+            - name: jwtJsAclScript
+              mountPath: {{ .Values.auth.jwt.jwtJsAclScriptPath }}
+              subPath: jwtJsAclScript
+          {{- end }}
+          {{- if and .Values.auth.jwt.enabled (eq .Values.auth.jwt.mode "files") }}
+            - name: jwtFilesAcl
+              mountPath: {{ .Values.auth.jwt.jwtFilesAclPath }}
+              subPath: jwtFilesAcl
+          {{- end }}
+          {{- with .Values.extraVolumeMounts }}
+            {{ toYaml . | indent 12 | trim }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{ else }}{{ include "mosquitto.fullname" . }}{{ end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ include "mosquitto.fullname" . }}{{- end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+      {{- if .Values.ports.mqtts.enabled }}
+        - name: certfile
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+        - name: keyfile
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+      {{- end }}
+      {{- if and .Values.auth.files.enabled .Values.auth.files.passwordEntries }}
+        - name: passwordfile
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+      {{- end }}
+      {{- if and .Values.auth.files.enabled .Values.auth.files.acls }}
+        - name: aclfile
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+      {{- end }}
+      {{- if and .Values.auth.jwt.enabled (eq .Values.auth.jwt.mode "js") }}
+        - name: jwtJsUserScript
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+        - name: jwtJsSuperuserScript
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+        - name: jwtJsAclScript
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+      {{- end }}
+      {{- if and .Values.auth.jwt.enabled (eq .Values.auth.jwt.mode "files") }}
+        - name: jwtFilesAcl
+          secret:
+            secretName: {{ include "mosquitto.fullname" . }}
+      {{- end }}
+      {{- with .Values.extraVolumes }}
+        {{ toYaml . | indent 8 | trim }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml . | indent 8 | trim }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{ toYaml . | indent 8 | trim }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{ toYaml . | indent 8 | trim }}
+    {{- end }}
