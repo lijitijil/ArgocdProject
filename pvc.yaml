@@ -24,7 +24,7 @@ items:
     - ReadWriteOnce
     resources:
       requests:
-        storage: 8Gi
+        storage: 1Gi
     volumeMode: Filesystem
   status:
     phase: Pending
