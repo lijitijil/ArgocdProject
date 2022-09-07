@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-application
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/RispaJoseph/argocd-app-config.git
+    targetRevision: HEAD
+    path: mo
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: mongodb
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
+    automated:
+      selfHeal: true
+      prune: true
+  
+  
+
+
+  
+
+
+
+
