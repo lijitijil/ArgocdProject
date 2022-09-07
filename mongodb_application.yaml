@@ -9,10 +9,10 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: mong
+    path: mo
   destination: 
     server: https://kubernetes.default.svc
-    namespace: mong
+    namespace: mo
 
   syncPolicy:
     syncOptions:
