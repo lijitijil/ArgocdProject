@@ -1,0 +1,13 @@
+mongodb:
+  labels:
+    group: com.stakater.platform
+    provider: stakater
+    version: 1.0.0
+  deployment:
+    replicas: 1
+    podLabels:      
+      app: mongodb
+    container:
+      name: mongodb
+      image: "bitnami/mongodb:latest"
+      port: 27017

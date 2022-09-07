@@ -1,0 +1,11 @@
+apiVersion: v1
+name: mongodb
+description: Helm Chart for MongoDB to run kubernetes
+version: 1.0.4
+keywords:
+  - mongodb
+  - kubernetes
+home: https://github.com/stakater-charts/mongodb
+maintainers:
+- name: Stakater
+  email: hello@stakater.com

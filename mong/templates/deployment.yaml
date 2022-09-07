@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+{{ include "mongodb.labels.stakater" . | indent 4 }}
+{{ include "mongodb.labels.chart" . | indent 4 }}
+  name: {{ template "mongodb.name" . }}
+spec:
+  replicas: {{ .Values.mongodb.deployment.replicas }}
+  template:
+    metadata:
+      labels:
+{{ toYaml .Values.mongodb.deployment.podLabels | indent 8 }}
+    spec:
+      containers:
+      - name: {{ .Values.mongodb.deployment.container.name }}
+        image: {{ .Values.mongodb.deployment.container.image | quote }}
+        ports:
+        - containerPort: {{ .Values.mongodb.deployment.container.port }}
