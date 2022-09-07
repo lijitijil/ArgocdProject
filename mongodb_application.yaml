@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: mongodb
+    path: chart-mongodb-replicaset
   destination: 
     server: https://kubernetes.default.svc
     namespace: mongodb
