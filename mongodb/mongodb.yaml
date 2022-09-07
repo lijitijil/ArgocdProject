@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  mongodb-root-password: ZjJmWFJPWW9lQg==
+kind: Secret
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"mongodb-root-password":"ZjJmWFJPWW9lQg=="},"kind":"Secret","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"mongodb","app.kubernetes.io/instance":"mongodb","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"mongodb","helm.sh/chart":"mongodb-13.1.2"},"name":"mongodb","namespace":"mongodb"},"type":"Opaque"}
+  creationTimestamp: "2022-09-07T06:29:39Z"
+  labels:
+    app.kubernetes.io/component: mongodb
+    app.kubernetes.io/instance: mongodb
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mongodb
+    helm.sh/chart: mongodb-13.1.2
+  name: mongodb
+  namespace: mongodb
+  resourceVersion: "3363"
+  uid: c283610f-4cf4-4dc2-a5ea-18b5f5defc67
+type: Opaque

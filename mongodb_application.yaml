@@ -9,10 +9,10 @@ spec:
   source:
     repoURL: https://github.com/RispaJoseph/argocd-app-config.git
     targetRevision: HEAD
-    path: mongoDB-K8s
+    path: mongodb
   destination: 
     server: https://kubernetes.default.svc
-    namespace: mongoDB-K8s
+    namespace: mongodb
 
   syncPolicy:
     syncOptions:

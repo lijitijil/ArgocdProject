@@ -1,0 +1,20 @@
+apiVersion: v1
+automountServiceAccountToken: true
+kind: ServiceAccount
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","automountServiceAccountToken":true,"kind":"ServiceAccount","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"mongodb","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"mongodb","helm.sh/chart":"mongodb-13.1.2"},"name":"mongodb","namespace":"mongodb"},"secrets":[{"name":"mongodb"}]}
+  creationTimestamp: "2022-09-07T06:29:39Z"
+  labels:
+    app.kubernetes.io/instance: mongodb
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mongodb
+    helm.sh/chart: mongodb-13.1.2
+  name: mongodb
+  namespace: mongodb
+  resourceVersion: "3365"
+  uid: 7e156a97-d66f-43f6-86c2-b569089bf52d
+secrets:
+- name: mongodb
+- name: mongodb-token-dd7sl

@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  ping-mongodb.sh: |
+    #!/bin/bash
+    mongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval "db.adminCommand('ping')"
+  readiness-probe.sh: |
+    #!/bin/bash
+    # Run the proper check depending on the version
+    [[ $(mongod -version | grep "db version") =~ ([0-9]+\.[0-9]+\.[0-9]+) ]] && VERSION=${BASH_REMATCH[1]}
+    . /opt/bitnami/scripts/libversion.sh
+    VERSION_MAJOR="$(get_sematic_version "$VERSION" 1)"
+    VERSION_MINOR="$(get_sematic_version "$VERSION" 2)"
+    VERSION_PATCH="$(get_sematic_version "$VERSION" 3)"
+    if [[ ( "$VERSION_MAJOR" -ge 5 ) || ( "$VERSION_MAJOR" -ge 4 && "$VERSION_MINOR" -ge 4 && "$VERSION_PATCH" -ge 2 ) ]]; then
+        mongosh $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.hello().isWritablePrimary || db.hello().secondary' | grep -q 'true$'
+    else
+        mongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.isMaster().ismaster || db.isMaster().secondary' | grep -q 'true$'
+    fi
+  startup-probe.sh: |
+    #!/bin/bash
+    mongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.hello().isWritablePrimary || db.hello().secondary' | grep -q 'true$'
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"ping-mongodb.sh":"#!/bin/bash\nmongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval \"db.adminCommand('ping')\"\n","readiness-probe.sh":"#!/bin/bash\n# Run the proper check depending on the version\n[[ $(mongod -version | grep \"db version\") =~ ([0-9]+\\.[0-9]+\\.[0-9]+) ]] \u0026\u0026 VERSION=${BASH_REMATCH[1]}\n. /opt/bitnami/scripts/libversion.sh\nVERSION_MAJOR=\"$(get_sematic_version \"$VERSION\" 1)\"\nVERSION_MINOR=\"$(get_sematic_version \"$VERSION\" 2)\"\nVERSION_PATCH=\"$(get_sematic_version \"$VERSION\" 3)\"\nif [[ ( \"$VERSION_MAJOR\" -ge 5 ) || ( \"$VERSION_MAJOR\" -ge 4 \u0026\u0026 \"$VERSION_MINOR\" -ge 4 \u0026\u0026 \"$VERSION_PATCH\" -ge 2 ) ]]; then\n    mongosh $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.hello().isWritablePrimary || db.hello().secondary' | grep -q 'true$'\nelse\n    mongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.isMaster().ismaster || db.isMaster().secondary' | grep -q 'true$'\nfi\n","startup-probe.sh":"#!/bin/bash\nmongosh  $TLS_OPTIONS --port $MONGODB_PORT_NUMBER --eval 'db.hello().isWritablePrimary || db.hello().secondary' | grep -q 'true$'\n"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"mongodb","app.kubernetes.io/instance":"mongodb","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"mongodb","helm.sh/chart":"mongodb-13.1.2"},"name":"mongodb-common-scripts","namespace":"mongodb"}}
+  creationTimestamp: "2022-09-07T06:29:39Z"
+  labels:
+    app.kubernetes.io/component: mongodb
+    app.kubernetes.io/instance: mongodb
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mongodb
+    helm.sh/chart: mongodb-13.1.2
+  name: mongodb-common-scripts
+  namespace: mongodb
+  resourceVersion: "3366"
+  uid: 3566ab8d-e768-4e6b-b506-8f6aaca9668d
