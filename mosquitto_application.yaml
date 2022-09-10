@@ -7,7 +7,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/RispaJoseph/argocd-app-config.git
+    repoURL: https://github.com/lijitijil/ArgocdProject.git
     targetRevision: HEAD
     path: mosquitto
   destination: 
